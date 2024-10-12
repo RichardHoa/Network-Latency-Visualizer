@@ -6,10 +6,21 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	WORKING_DIR := "/Users/hoathaidang/Documents/bootdev/go-networking"
+
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	
 	fmt.Println("Welcome to the Network-Latency-Visualizer!")
+
+	
 
 	crontabJobs, err := exec.Command("crontab", "-l").Output()
 	if err != nil {
@@ -20,7 +31,9 @@ func main() {
 		fmt.Println("Crontab has been established")
 	}
 
-	file, openFileErr := os.OpenFile("report.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
+	reportWD := WORKING_DIR + "/report/report.txt"
+
+	file, openFileErr := os.OpenFile(reportWD, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
 	if openFileErr != nil {
 		log.Fatal(openFileErr)
 	}
@@ -34,6 +47,8 @@ func main() {
 	if writeFileErr != nil {
 		log.Fatal(writeFileErr)
 	}
+	fmt.Println("Write file successfully")
+	fmt.Printf("File directory is %s\n", reportWD)
 
 
 
