@@ -8,3 +8,7 @@
 
 
 We use ping to check for network latency, please note that this only measure the latency of the whole round trip, meaning we can't know whether it's the upload part that is slow or the download part that is slow in your machine. We ping 10 times to check for the result
+
+
+1. chmod 777 scanning
+2. ./scanning

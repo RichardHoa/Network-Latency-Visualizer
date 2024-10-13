@@ -78,23 +78,6 @@ func askForTimeInput() (timeInMinutes int) {
 	return time
 }
 
-func SetUpCronJob(WORKING_DIR string) error {
-	timeInMinutes := askForTimeInput()
-
-	fmt.Printf("You chose %d minutes\n", timeInMinutes)
-
-	timeStringInCronjob := calculateTimeString(timeInMinutes)
-
-	fmt.Printf("Your cronjob timestring is: %s\n", timeStringInCronjob)
-
-	fmt.Println("Please allow the script to set the cronjob by clicking allow")
-
-	err := saveCronJob(timeStringInCronjob, WORKING_DIR)
-
-	return err 
-
-}
-
 
 func saveCronJob(timeStringInCronjob string, WORKING_DIR string) error {
 
@@ -112,7 +95,7 @@ func saveCronJob(timeStringInCronjob string, WORKING_DIR string) error {
 
 	defer file.Close()
 
-	cronjob := timeStringInCronjob + " " + WORKING_DIR + "/networking" + "\n"
+	cronjob := timeStringInCronjob + " " + WORKING_DIR + "/scanning" + "\n"
 
 	_, writeExistingCronJobErr := file.Write(crontabJobs)
 	if writeExistingCronJobErr != nil {
@@ -133,3 +116,23 @@ func saveCronJob(timeStringInCronjob string, WORKING_DIR string) error {
 
 	return nil
 }
+
+func SetUpCronJob(WORKING_DIR string) error {
+	timeInMinutes := askForTimeInput()
+
+	fmt.Printf("You chose %d minutes\n", timeInMinutes)
+
+	timeStringInCronjob := calculateTimeString(timeInMinutes)
+
+	fmt.Printf("Your cronjob timestring is: %s\n", timeStringInCronjob)
+
+	fmt.Println("Please allow the script to set the cronjob by clicking allow")
+
+	err := saveCronJob(timeStringInCronjob, WORKING_DIR)
+
+	return err 
+
+}
+
+
+
