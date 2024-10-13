@@ -1,0 +1,7 @@
+round-trip min/avg/max/stddev = 26.758/28.467/34.257/2.007 ms | 2024-10-13 20:11:39
+round-trip min/avg/max/stddev = 35.838/39.465/49.907/4.302 ms | 2024-10-13 20:15:29
+round-trip min/avg/max/stddev = 26.389/31.799/41.678/5.291 ms | 2024-10-13 20:18:20
+round-trip min/avg/max/stddev = 26.635/30.450/34.374/3.170 ms | 2024-10-13 20:32:12
+round-trip min/avg/max/stddev = 25.965/29.546/35.712/3.657 ms | 2024-10-13 20:33:10
+round-trip min/avg/max/stddev = 26.442/28.585/34.085/2.563 ms | 2024-10-13 20:34:10
+round-trip min/avg/max/stddev = 26.483/30.290/37.375/3.926 ms | 2024-10-13 20:35:10
