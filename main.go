@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
+	"github.com/RichardHoa/Network-Latency-Visualizer/chart"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
 	// "github.com/joho/godotenv"
 	"github.com/nexidian/gocliselect"
@@ -15,6 +16,11 @@ import (
 )
 
 func main() {
+
+	if len(os.Args) > 1 && os.Args[1] != "-a" {
+		fmt.Println("Invalid command line")
+		os.Exit(1)
+	}
 
 	// WORKING_DIR here, important input for the whole program
 	WORKING_DIR := "/Users/hoathaidang/Documents/bootdev/go-networking"
@@ -33,6 +39,7 @@ func main() {
 
 		// Create option for the user
 		menu.AddItem("Remove cronjob", "remove cronjob")
+		menu.AddItem("Chart", "chart")
 		menu.AddItem("Help me", "help me")
 
 		// Get the choice from the user
@@ -42,15 +49,20 @@ func main() {
 		// Remove existing cronjob
 		case "remove cronjob":
 			cronjob.SaveCronJob("", WORKING_DIR, "remove")
+		case "chart":
+			chart.LineExamples{}.Examples()
 
 		// Display help message
 		case "help me":
-			fmt.Println("To edit a cronjob, just remove and then you can add a new one")
+			fmt.Println("To edit a cronjob, remove it first then do ./scanning")
 		}
 
 		os.Exit(0)
 
 	}
+
+
+	
 
 	// If user do not input custom -a flag, then we will set up cronjob
 
