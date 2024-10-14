@@ -7,9 +7,10 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
 	"github.com/RichardHoa/Network-Latency-Visualizer/chart"
+	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
+	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
 	// "github.com/joho/godotenv"
 	"github.com/nexidian/gocliselect"
 	// "time"
@@ -39,30 +40,35 @@ func main() {
 
 		// Create option for the user
 		menu.AddItem("Remove cronjob", "remove cronjob")
-		menu.AddItem("Chart", "chart")
+		menu.AddItem("Show network latency chart", "chart")
+		menu.AddItem("Speed testing", "speed testing")
 		menu.AddItem("Help me", "help me")
 
-		// Get the choice from the user
-		choice := menu.Display()
+		for {
+			// Get the choice from the user
+			choice := menu.Display()
 
-		switch choice {
-		// Remove existing cronjob
-		case "remove cronjob":
-			cronjob.SaveCronJob("", WORKING_DIR, "remove")
-		case "chart":
-			chart.LineExamples{}.Examples()
+			switch choice {
+			// Remove existing cronjob
+			case "remove cronjob":
+				cronjob.SaveCronJob("", WORKING_DIR, "remove")
+				os.Exit(1)
 
-		// Display help message
-		case "help me":
-			fmt.Println("To edit a cronjob, remove it first then do ./scanning")
+			case "chart":
+				chart.LineExamples{}.Examples()
+				os.Exit(1)
+
+			case "speed testing":
+				fmt.Println("We are running speed testing, please wait....")
+				speedtest.SpeedTesting()
+				os.Exit(1)
+
+			// Display help message
+			case "help me":
+				fmt.Println("To edit a cronjob, remove it first then do ./scanning")
+			}
 		}
-
-		os.Exit(0)
-
 	}
-
-
-	
 
 	// If user do not input custom -a flag, then we will set up cronjob
 

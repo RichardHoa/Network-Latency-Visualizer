@@ -10,6 +10,7 @@ import (
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
 	"log"
+	"os/exec"
 	"strings"
 )
 
@@ -31,7 +32,7 @@ func lineShowLabel(min []string, avg []string, max []string, stddev []string, ti
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title:    "Network latency chart",
-			Subtitle: "All is measured in ms (milisecond)",
+			Subtitle: "All metrics are measured in ms (milisecond)\nYou can turn on and off the line by clicking on the legend",
 			Link:     "https://github.com/go-echarts/go-echarts",
 		}),
 	)
@@ -41,14 +42,10 @@ func lineShowLabel(min []string, avg []string, max []string, stddev []string, ti
 		AddSeries("Avg latency", generateLineItems(avg)).
 		AddSeries("Max latency", generateLineItems(max)).
 		AddSeries("Standard deviation", generateLineItems(stddev)).
-		
 		SetSeriesOptions(
 			charts.WithLineChartOpts(opts.LineChart{
 				ShowSymbol: opts.Bool(true),
 			}),
-			// charts.WithLabelOpts(opts.Label{
-			// 	Show: opts.Bool(true),
-			// }),
 		)
 	return line
 }
@@ -83,22 +80,6 @@ func (LineExamples) Examples() {
 		timeString = append(timeString, time)
 	}
 
-	// for _, line := range timeString {
-	// 	fmt.Println(line)
-	// }
-	// for _, line := range min {
-	// 	fmt.Println(line)
-	// }
-	// for _, line := range avg {
-	// 	fmt.Println(line)
-	// }
-	// for _, line := range max {
-	// 	fmt.Println(line)
-	// }
-	// for _, line := range stddev {
-	// 	fmt.Println(line)
-	// }
-
 	page := components.NewPage()
 	page.AddCharts(
 		lineShowLabel(min, avg, max, stddev, timeString),
@@ -108,4 +89,10 @@ func (LineExamples) Examples() {
 		log.Fatal(err)
 	}
 	page.Render(io.MultiWriter(f))
+
+	openHTML := exec.Command("open", "./chart/html/line.html")
+	err = openHTML.Run()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
