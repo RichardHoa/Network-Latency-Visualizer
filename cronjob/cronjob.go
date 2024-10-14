@@ -46,7 +46,7 @@ func calculateTimeString(timeInMinutes int) (timeStringInCronjob string) {
 func askForTimeInput() (timeInMinutes int) {
 	var time int
 
-	fmt.Println("For the first step, please choose how often you want to check your network latency")
+	fmt.Println("Please choose how often you want to check your network latency")
 	fmt.Println("Minimum: 1 minutes, maximum: 1 day")
 
 	for {

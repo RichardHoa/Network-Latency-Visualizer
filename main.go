@@ -40,9 +40,11 @@ func main() {
 
 		// Create option for the user
 		menu.AddItem("Remove cronjob", "remove cronjob")
+		menu.AddItem("Edit cronjob", "edit cronjob")
 		menu.AddItem("Show network latency chart", "chart")
 		menu.AddItem("Speed testing", "speed testing")
 		menu.AddItem("Help me", "help me")
+		menu.AddItem("Quit", "quit")
 
 		for {
 			// Get the choice from the user
@@ -62,6 +64,17 @@ func main() {
 				fmt.Println("We are running speed testing, please wait....")
 				speedtest.SpeedTesting()
 				os.Exit(1)
+
+			case "edit cronjob":
+				cronjob.SaveCronJob("", WORKING_DIR, "remove")
+				err := cronjob.SetUpCronJob(WORKING_DIR)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+			case "quit":
+				os.Exit(1)
+				
 
 			// Display help message
 			case "help me":
