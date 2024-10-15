@@ -1,2 +1,1 @@
 0 * * * * /Users/hoathaidang/Library/CloudStorage/OneDrive-FulbrightUniversityVietnam/ROAD/Mongodb-Backups/backup.sh >> /tmp/com.road.backup.out 2>> /tmp/com.road.backup.err
-* * * * * /Users/hoathaidang/Documents/bootdev/go-networking/scanning >> /tmp/scanning.out 2>> /tmp/scanning.err

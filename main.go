@@ -11,6 +11,7 @@ import (
 	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
 	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
+	"github.com/RichardHoa/Network-Latency-Visualizer/network"
 	// "github.com/joho/godotenv"
 	"github.com/nexidian/gocliselect"
 	// "time"
@@ -39,6 +40,7 @@ func main() {
 		menu := gocliselect.NewMenu("Choose your action")
 
 		// Create option for the user
+		menu.AddItem("Network PID", "network pid")
 		menu.AddItem("Remove cronjob", "remove cronjob")
 		menu.AddItem("Edit cronjob", "edit cronjob")
 		menu.AddItem("Show network latency chart", "chart")
@@ -51,13 +53,20 @@ func main() {
 			choice := menu.Display()
 
 			switch choice {
+			case "network pid":
+				err := network.ReadNetworkData(WORKING_DIR)
+				if err != nil {
+					log.Fatal(err)
+				}
+				os.Exit(1)
+
 			// Remove existing cronjob
 			case "remove cronjob":
 				cronjob.SaveCronJob("", WORKING_DIR, "remove")
 				os.Exit(1)
 
 			case "chart":
-				chart.LineExamples{}.Examples()
+				chart.CreatePingChart()
 				os.Exit(1)
 
 			case "speed testing":
@@ -74,7 +83,6 @@ func main() {
 
 			case "quit":
 				os.Exit(1)
-				
 
 			// Display help message
 			case "help me":
@@ -94,12 +102,18 @@ func main() {
 	// If we already set up cronjob, then we will perform automatic scanning
 	if strings.Contains(string(cronjobList), "scanning") {
 		fmt.Println("We already set up cronjob")
-		fmt.Println("Perform automatic scanning")
+		fmt.Println("Perform automatic scanning and record network data...")
 
 		err := ping.PingScanning(WORKING_DIR)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		recordErr := network.RecordNetworkData(WORKING_DIR)
+		if recordErr != nil {
+			log.Fatal(err)
+		}
+		os.Exit(1)
 
 	} else {
 		fmt.Println("Look like we haven't set up the cronjob, let's do it now!")

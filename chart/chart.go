@@ -14,10 +14,7 @@ import (
 	"strings"
 )
 
-// var (
-// 	itemCntLine = 6
-// 	dataPoints  = []string{"Apple", "Banana", "Peach ", "Lemon", "Pear", "Cherry", "Something", "something", "something", "something", "something"}
-// )
+
 
 func generateLineItems(dataPoints []string) []opts.LineData {
 	items := make([]opts.LineData, 0)
@@ -27,7 +24,7 @@ func generateLineItems(dataPoints []string) []opts.LineData {
 	return items
 }
 
-func lineShowLabel(min []string, avg []string, max []string, stddev []string, timeString []string) *charts.Line {
+func LineLabelPingChart(min []string, avg []string, max []string, stddev []string, timeString []string) *charts.Line {
 	line := charts.NewLine()
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
@@ -50,9 +47,8 @@ func lineShowLabel(min []string, avg []string, max []string, stddev []string, ti
 	return line
 }
 
-type LineExamples struct{}
 
-func (LineExamples) Examples() {
+func CreatePingChart() {
 
 	report, openFileErr := os.ReadFile("report/report.txt")
 	if openFileErr != nil {
@@ -82,7 +78,7 @@ func (LineExamples) Examples() {
 
 	page := components.NewPage()
 	page.AddCharts(
-		lineShowLabel(min, avg, max, stddev, timeString),
+		LineLabelPingChart(min, avg, max, stddev, timeString),
 	)
 	f, err := os.Create("chart/html/line.html")
 	if err != nil {
