@@ -6,16 +6,17 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 )
 
 type NetworkData struct {
-	processName string
+	ProcessName string
 	MBIn        []string
 	MBOut       []string
-	time        []string
+	Time        []string
 }
 
 func RecordNetworkData(WORKING_DIR string) error {
@@ -71,12 +72,12 @@ func RecordNetworkData(WORKING_DIR string) error {
 	return nil
 }
 
-func ReadNetworkData(WORKING_DIR string) error {
+func ReadNetworkData(WORKING_DIR string) (networkMap map[string]NetworkData, err error) {
 	filePath := WORKING_DIR + "/network/network.txt"
 
 	file, err := os.ReadFile(filePath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	lines := strings.Split(string(file), "\n")
@@ -92,39 +93,81 @@ func ReadNetworkData(WORKING_DIR string) error {
 
 			MBIn := append(networkData.MBIn, slice[1])
 			MBOut := append(networkData.MBOut, slice[2])
-			time := append(networkData.time, slice[3])
+			time := append(networkData.Time, slice[3])
 
 			networkDataMap[name] = NetworkData{
-				processName: name,
+				ProcessName: name,
 				MBIn:        MBIn,
 				MBOut:       MBOut,
-				time:        time,
+				Time:        time,
 			}
 
 		} else {
 			networkDataMap[name] = NetworkData{
-				processName: name,
+				ProcessName: name,
 				MBIn:        []string{slice[1]},
 				MBOut:       []string{slice[2]},
-				time:        []string{slice[3]},
+				Time:        []string{slice[3]},
 			}
 
 		}
 
 	}
 
-	for name, networkData := range networkDataMap {
-		fmt.Println("--------------------------")
-		fmt.Printf("Process name: %s\n", name)
-		fmt.Printf("Length MBIN: %d\n", len(networkData.MBIn))
-		fmt.Printf("Length MBOUT: %d\n", len(networkData.MBOut))
-		fmt.Printf("Length Time: %d\n", len(networkData.time))
-		// fmt.Printf("MB In: %s\n", strings.Join(networkData.MBIn, ", "))
-		// fmt.Printf("MB Out: %s\n", strings.Join(networkData.MBOut, ", "))
-		// fmt.Printf("Time: %s\n", strings.Join(networkData.time, ", "))
-		fmt.Println()
+	return networkDataMap, nil
+
+}
+
+func SortNetworkDataMap(networkDataMap map[string]NetworkData, isMBIn bool) (keysSortedInDesc []string) {
+
+	keysDesc := make([]string, 0, len(networkDataMap))
+
+	for key := range networkDataMap {
+		keysDesc = append(keysDesc, key)
 	}
 
-	return nil
+	sort.SliceStable(keysDesc, func(i, j int) bool {
+		var (
+			totalMBI float64
+			totalMBJ float64
+			MBInI    []string
+			MBInJ    []string
+		)
+
+		if isMBIn {
+			MBInI = networkDataMap[keysDesc[i]].MBIn
+			MBInJ = networkDataMap[keysDesc[j]].MBIn
+		} else {
+			MBInI = networkDataMap[keysDesc[i]].MBOut
+			MBInJ = networkDataMap[keysDesc[j]].MBOut
+		}
+
+		for _, v := range MBInI {
+			vFloat64, _ := strconv.ParseFloat(v, 64)
+			totalMBI += vFloat64
+		}
+
+		for _, v := range MBInJ {
+			vFloat64, _ := strconv.ParseFloat(v, 64)
+			totalMBJ += vFloat64
+		}
+
+		averageMbInI := totalMBI / float64(len(MBInI))
+		averageMBInJ := totalMBJ / float64(len(MBInJ))
+
+		return averageMbInI > averageMBInJ
+	})
+
+	return keysDesc
+
+}
+
+func GetTopDesc(keysMB []string, topNumber int) (topKeysInDesc []string) {
+	topKeys := make([]string, 0, 3)
+	for i := 0; i < topNumber; i++ {
+		topKeys = append(topKeys, keysMB[i])
+	}
+
+	return topKeys
 
 }

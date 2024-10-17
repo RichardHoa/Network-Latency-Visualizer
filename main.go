@@ -9,9 +9,10 @@ import (
 
 	"github.com/RichardHoa/Network-Latency-Visualizer/chart"
 	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
+	"github.com/RichardHoa/Network-Latency-Visualizer/network"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
 	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
-	"github.com/RichardHoa/Network-Latency-Visualizer/network"
+	// "github.com/RichardHoa/Network-Latency-Visualizer/table"
 	// "github.com/joho/godotenv"
 	"github.com/nexidian/gocliselect"
 	// "time"
@@ -40,7 +41,7 @@ func main() {
 		menu := gocliselect.NewMenu("Choose your action")
 
 		// Create option for the user
-		menu.AddItem("Network PID", "network pid")
+		menu.AddItem("Show chart of each network", "network pid")
 		menu.AddItem("Remove cronjob", "remove cronjob")
 		menu.AddItem("Edit cronjob", "edit cronjob")
 		menu.AddItem("Show network latency chart", "chart")
@@ -54,13 +55,13 @@ func main() {
 
 			switch choice {
 			case "network pid":
-				err := network.ReadNetworkData(WORKING_DIR)
+				err := chart.CreateNetworkChart(WORKING_DIR)
 				if err != nil {
 					log.Fatal(err)
 				}
+				// table.PrintTable()
 				os.Exit(1)
 
-			// Remove existing cronjob
 			case "remove cronjob":
 				cronjob.SaveCronJob("", WORKING_DIR, "remove")
 				os.Exit(1)
