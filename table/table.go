@@ -11,7 +11,7 @@ func PrintNetworkingTable(networkDataMap map[string]network.NetworkData, keyDesc
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 
-	t.AppendHeader(table.Row{"Process Name", "MB In", "MB Out", "Time"})
+	t.AppendHeader(table.Row{"Process Name", "Incoming usage (MB)", "Outgoing usage (MB)", "Time"})
 
 	for _, processName := range keyDesc {
 

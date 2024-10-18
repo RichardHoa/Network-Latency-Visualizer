@@ -7,7 +7,7 @@ import (
 
 func SpeedTesting() {
 	var speedtestClient = speedtest.New()
-	
+
 	serverList, _ := speedtestClient.FetchServers()
 	targets, _ := serverList.FindServer([]int{})
 
@@ -17,6 +17,6 @@ func SpeedTesting() {
 		s.UploadTest()
 		// Note: The unit of s.DLSpeed, s.ULSpeed is bytes per second, this is a float64.
 		fmt.Printf("Latency: %s, Download: %s, Upload: %s\n", s.Latency, s.DLSpeed, s.ULSpeed)
-		s.Context.Reset() // reset counter
+		s.Context.Reset()
 	}
 }

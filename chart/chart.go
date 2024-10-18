@@ -49,7 +49,12 @@ func LineLabelPingChart(min []string, avg []string, max []string, stddev []strin
 }
 
 func LineLabelNetworkPIDChart(TopDesc []string, networkDataMap map[string]network.NetworkData, MBType string) *charts.Line {
-	title := fmt.Sprintf("Process %s network chart", MBType)
+	var title string
+	if MBType == "MBIn" {
+		title = "Incoming Network Data by Process"
+	} else {
+		title = "Outgoing Network Data by Process"
+	}
 	line := charts.NewLine()
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
@@ -119,17 +124,17 @@ func CreateNetworkChart(WORKING_DIR string) error {
 		LineLabelNetworkPIDChart(MBOutDescTop, networkDataMap, "MBOut"),
 	)
 
-	openHTMLMBInErr := CreateAndOpenHTML(MBInPage, "chart/html/networkpid-in.html", "Network in chart")
+	openHTMLMBInErr := CreateAndOpenHTML(MBInPage, "chart/html/networkpid-in.html", "Incoming network data")
 	if openHTMLMBInErr != nil {
 		return openHTMLMBInErr
 	}
 
-	openHTMLMBOutErr := CreateAndOpenHTML(MBOutPage, "chart/html/networkpid-out.html", "Network out chart")
+	openHTMLMBOutErr := CreateAndOpenHTML(MBOutPage, "chart/html/networkpid-out.html", "Outgoing network data")
 	if openHTMLMBOutErr != nil {
 		return openHTMLMBOutErr
 	}
 
-	table.PrintNetworkingTable(networkDataMap,keysMBInDesc)
+	table.PrintNetworkingTable(networkDataMap, keysMBInDesc)
 
 	return nil
 }

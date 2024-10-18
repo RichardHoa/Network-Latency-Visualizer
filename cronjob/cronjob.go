@@ -41,7 +41,6 @@ func calculateTimeString(timeInMinutes int) (timeStringInCronjob string) {
 
 }
 
-
 // Ask for user time input, return time in minutes
 func askForTimeInput() (timeInMinutes int) {
 	var time int
@@ -63,21 +62,21 @@ func askForTimeInput() (timeInMinutes int) {
 		if strings.Contains(timeMark, "mins") {
 			minString := strings.Split(inputTime, "mins")[0]
 			min, _ = strconv.Atoi(minString)
-		// If user input in hrs, convert that to min
+			// If user input in hrs, convert that to min
 		} else if strings.Contains(timeMark, "hrs") {
 			minString := strings.Split(inputTime, "hrs")[0]
 			hours, _ := strconv.Atoi(minString)
 			min = hours * 60
-		// If user input is not hrs or mins, prompt again
+			// If user input is not hrs or mins, prompt again
 		} else {
 			fmt.Println("It's either minutes or hours")
 			continue
 		}
 		//  If min is between 1 and 60 or min is between 1 hr and 24 hrs and the number is whole
-		if min >= 1 && min <= 60 || min > 60 && min%60 == 0  && min < 1440 {
+		if min >= 1 && min <= 60 || min > 60 && min%60 == 0 && min < 1440 {
 			time = min
 			break
-		// If the time is not within the limit, prompt user again
+			// If the time is not within the limit, prompt user again
 		} else {
 			fmt.Println("Please remember the maximum time")
 		}
@@ -119,10 +118,15 @@ func SaveCronJob(timeStringInCronjob string, WORKING_DIR string, mode string) er
 		// Convert []byte to string array
 		cronjobArray := strings.Split(string(crontabJobs), "\n")
 		// Scanning target to remove
-		scanningTarget := WORKING_DIR + "/scanning"
+		scanningCronjob := WORKING_DIR + "/scanning"
+		envEnvironment := "WORKING_DIR=" + WORKING_DIR
 		// Remove the line that contain the scanning target
 		for index, cronjob := range cronjobArray {
-			if strings.Contains(cronjob, scanningTarget) {
+			if strings.Contains(cronjob, scanningCronjob) {
+				cronjobArray = append(cronjobArray[:index], cronjobArray[index+1:]...)
+			}
+
+			if strings.Contains(cronjob, envEnvironment) {
 				cronjobArray = append(cronjobArray[:index], cronjobArray[index+1:]...)
 			}
 		}
@@ -130,6 +134,14 @@ func SaveCronJob(timeStringInCronjob string, WORKING_DIR string, mode string) er
 		joinedString := strings.Join(cronjobArray, "\n")
 		// Assign the []byte to the existing cronjobs
 		crontabJobs = []byte(joinedString)
+
+	}
+
+	if mode == "add" {
+		_, writeENV := file.WriteString("WORKING_DIR=" + WORKING_DIR + "\n")
+		if writeENV != nil {
+			return writeENV
+		}
 
 	}
 

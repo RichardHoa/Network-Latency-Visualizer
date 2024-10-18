@@ -20,7 +20,7 @@ func RunTerminal(WORKING_DIR string) {
 
 	// Create option for the user
 	menu.AddItem("Cronjob options", "cronjob options")
-	menu.AddItem("Show chart of each network", "network pid")
+	menu.AddItem("Show network bandwidth consumed by top 3 processes", "network pid")
 	menu.AddItem("Show network latency chart", "chart")
 	menu.AddItem("Speed testing", "speed testing")
 	menu.AddItem("Quit", "quit")
@@ -47,7 +47,7 @@ func RunTerminal(WORKING_DIR string) {
 			os.Exit(1)
 
 		case "speed testing":
-			fmt.Println("We are running speed testing, please wait....")
+			fmt.Println("We are running speed testing, please wait around 30 seconds")
 			speedtest.SpeedTesting()
 			os.Exit(1)
 
@@ -73,6 +73,7 @@ func cronJobOPtions(WORKING_DIR string) {
 
 	menu.AddItem("Edit cronjob", "edit cronjob")
 	menu.AddItem("Remove cronjob", "remove cronjob")
+	menu.AddItem("Come back", "come back")
 
 	clearTerminal()
 	choice := menu.Display()
@@ -87,7 +88,11 @@ func cronJobOPtions(WORKING_DIR string) {
 		}
 	case "remove cronjob":
 		cronjob.SaveCronJob("", WORKING_DIR, "remove")
+
+	case "come back":
+		fmt.Println("Coming back")
 	}
+
 }
 
 func clearTerminal() {

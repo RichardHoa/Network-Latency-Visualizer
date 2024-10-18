@@ -1,14 +1,69 @@
-# Network-Latency-Visualizer
+# Network Latency Visualizer
 
-- Network Latency Checks: The program will regularly check network latency using the ping command. Users can set the frequency for these checks, ranging from every 5 minutes to once a day, utilizing a cron job to automate this process.
-- Data Visualization: After gathering latency data over time, users will have the option to visualize this information in a chart format.
-- Performance Recommendations: The application will provide performance recommendations, such as identifying which hours have the strongest network performance.
-- Download and Upload Speed: Users will also be able to view their download and upload speed.
-- Bandwidth usage for each process (program)
+## Features
+1. **Data Visualization**: Visualize network latency data over time in easy-to-understand charts.
+2. **Network Latency Monitoring**: Perform regular network latency checks using the `ping` command. You can set the frequency of checks (from every 5 minutes to once a day) via a cron job to automate the process.
+3. **Process Bandwidth Usage**: Track bandwidth usage by individual processes, displaying both incoming and outgoing data.
+4. **Download & Upload Speed**: Measure and display your current download and upload speeds.
 
+## How to Use
 
-We use ping to check for network latency, please note that this only measure the latency of the whole round trip, meaning we can't know whether it's the upload part that is slow or the download part that is slow in your machine. We ping 10 times to check for the result
+1. Make the script executable:
+    ```bash
+    chmod 777 scanning
+    ```
 
+2. Start data collection:
+    ```bash
+    ./scanning
+    ```
 
-1. chmod 777 scanning
-2. ./scanning
+3. For advanced options, run:
+    ```bash
+    ./scanning -a
+    ```
+
+### Advanced Options Menu
+Upon running the advanced options, you'll see the following menu:
+
+A terminal option screen will appear with various option, pick what you like!
+```
+What do you want to do?:
+>  Cronjob options
+   Show network bandwidth consumed by top 3 processes
+   Show network latency chart
+   Speed testing
+   Quit
+```
+
+#### Options Explained
+- **Cronjob Options**: Modify or remove the existing cronjob that automates network checks. You can view the current cronjob by using:
+    ```bash
+    crontab -l
+    ```
+    The cronjob working directory will resemble: `$Yourworkingdir/go-networking/scanning`.
+  
+- **Show Network Bandwidth by Top 3 Processes**: Displays two HTML graphs in your browser:
+    1. Incoming network bandwidth usage by the top 3 processes.
+    2. Outgoing network bandwidth usage by the top 3 processes.
+
+   Additionally, a detailed table with all processes and their bandwidth usage will be displayed in the terminal.
+
+- **Show Network Latency Chart**: Opens an HTML graph with a full network latency performance overview.
+
+All HTML charts are stored in the `chart/html` folder for future access.
+
+### Data Storage
+- **Network Bandwidth Data**: Stored in `network/network.txt`.
+- **Network Latency Data**: Stored in `ping/ping.txt`.
+
+## Motives
+This project was created as a way to get familiar with the Go programming language, combined with an interest in networking.
+
+## Technology
+- **Latency Data Collection**: Uses the built-in macOS `ping` command (`ping google.com -c 10`) to gather latency data.
+- **Bandwidth Usage**: Uses `nettop -l 1 -P -x` to monitor bandwidth usage by each process.
+
+## Limitations
+- **Latency Measurement**: The `ping` command only measures the total round-trip latency, so it cannot distinguish whether upload or download is slower.
+- **Process Name Length**: The `nettop` command truncates long process names, but it's usually clear enough to identify the associated application.
