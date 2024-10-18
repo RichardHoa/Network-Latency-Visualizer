@@ -11,7 +11,7 @@ import (
 // Function to scan ping for network latency then save the stats to report/report.txt
 func PingScanning(workingDir string) (scanningErr error) {
 	// Initialize path of the report file
-	workingDirReport := workingDir + "/report/report.txt"
+	workingDirReport := workingDir + "/ping/ping.txt"
 	// Testing log
 	fmt.Printf("Working dir ping: %s\n", workingDirReport)
 

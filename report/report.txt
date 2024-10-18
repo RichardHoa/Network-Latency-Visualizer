@@ -1,2 +1,0 @@
-round-trip min/avg/max/stddev = 55.539/62.548/72.188/4.771 ms | 2024-10-18 10:23:12
-round-trip min/avg/max/stddev = 56.334/61.633/71.595/4.284 ms | 2024-10-18 10:24:09

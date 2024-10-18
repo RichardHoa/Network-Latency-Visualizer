@@ -80,7 +80,7 @@ func LineLabelNetworkPIDChart(TopDesc []string, networkDataMap map[string]networ
 
 func CreatePingChart() {
 
-	min, avg, max, stddev, timeString, readReportErr := ping.ReadPingReport("report/report.txt")
+	min, avg, max, stddev, timeString, readReportErr := ping.ReadPingReport("ping/ping.txt")
 	if readReportErr != nil {
 		log.Fatal(readReportErr)
 	}
