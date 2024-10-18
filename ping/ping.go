@@ -42,3 +42,35 @@ func PingScanning(workingDir string) (scanningErr error) {
 	// Return nil if no error
 	return nil
 }
+
+func ReadPingReport(reportPath string) (min []string, avg []string, max []string, sttdev []string, timeString []string, err error) {
+
+	report, openFileErr := os.ReadFile(reportPath)
+	if openFileErr != nil {
+		return nil, nil, nil, nil, nil, openFileErr
+	}
+	lines := strings.Split(string(report), "\n")
+	lines = lines[:len(lines)-1]
+
+	minSlice := make([]string, 0)
+	avgSlice := make([]string, 0)
+	maxSlice := make([]string, 0)
+	stddevSlice := make([]string, 0)
+	timeStringSlice := make([]string, 0)
+
+	for _, line := range lines {
+		lineSlice := strings.Split(line, "|")
+		time := lineSlice[1]
+		data := lineSlice[0]
+		stats := strings.Split(strings.Split(data, "=")[1], "/")
+
+		minSlice = append(minSlice, stats[0])
+		avgSlice = append(avgSlice, stats[1])
+		maxSlice = append(maxSlice, stats[2])
+		stddevSlice = append(stddevSlice, strings.Split(stats[3], " ")[0])
+		timeStringSlice = append(timeStringSlice, time)
+	}
+
+	return minSlice, avgSlice, maxSlice, stddevSlice, timeStringSlice, nil
+
+}

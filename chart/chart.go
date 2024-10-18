@@ -10,6 +10,8 @@ import (
 	"strings"
 
 	"github.com/RichardHoa/Network-Latency-Visualizer/network"
+	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
+	"github.com/RichardHoa/Network-Latency-Visualizer/table"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
@@ -78,30 +80,9 @@ func LineLabelNetworkPIDChart(TopDesc []string, networkDataMap map[string]networ
 
 func CreatePingChart() {
 
-	report, openFileErr := os.ReadFile("report/report.txt")
-	if openFileErr != nil {
-		log.Fatal(openFileErr)
-	}
-	lines := strings.Split(string(report), "\n")
-	lines = lines[:len(lines)-1]
-
-	min := make([]string, 0)
-	avg := make([]string, 0)
-	max := make([]string, 0)
-	stddev := make([]string, 0)
-	timeString := make([]string, 0)
-
-	for _, line := range lines {
-		lineSlice := strings.Split(line, "|")
-		time := lineSlice[1]
-		data := lineSlice[0]
-		stats := strings.Split(strings.Split(data, "=")[1], "/")
-
-		min = append(min, stats[0])
-		avg = append(avg, stats[1])
-		max = append(max, stats[2])
-		stddev = append(stddev, strings.Split(stats[3], " ")[0])
-		timeString = append(timeString, time)
+	min, avg, max, stddev, timeString, readReportErr := ping.ReadPingReport("report/report.txt")
+	if readReportErr != nil {
+		log.Fatal(readReportErr)
 	}
 
 	page := components.NewPage()
@@ -148,6 +129,8 @@ func CreateNetworkChart(WORKING_DIR string) error {
 		return openHTMLMBOutErr
 	}
 
+	table.PrintNetworkingTable(networkDataMap,keysMBInDesc)
+
 	return nil
 }
 
@@ -164,7 +147,7 @@ func CreateAndOpenHTML(page *components.Page, filePath string, title string) err
 	htmlTitle := fmt.Sprintf("<title>%s</title>", title)
 
 	updatedContent := strings.Replace(string(htmlContent), "<title>Awesome go-echarts</title>", htmlTitle, 1)
-	
+
 	err = os.WriteFile(filePath, []byte(updatedContent), 0644)
 	if err != nil {
 		log.Fatal(err)

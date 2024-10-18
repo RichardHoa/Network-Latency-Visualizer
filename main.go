@@ -7,89 +7,31 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/RichardHoa/Network-Latency-Visualizer/chart"
 	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
 	"github.com/RichardHoa/Network-Latency-Visualizer/network"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
-	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
 	// "github.com/RichardHoa/Network-Latency-Visualizer/table"
 	// "github.com/joho/godotenv"
-	"github.com/nexidian/gocliselect"
 	// "time"
 )
 
 func main() {
+
+	// WORKING_DIR here, important input for the whole program
+	WORKING_DIR := "/Users/hoathaidang/Documents/bootdev/go-networking"
 
 	if len(os.Args) > 1 && os.Args[1] != "-a" {
 		fmt.Println("Invalid command line")
 		os.Exit(1)
 	}
 
-	// WORKING_DIR here, important input for the whole program
-	WORKING_DIR := "/Users/hoathaidang/Documents/bootdev/go-networking"
-	// Testing print
-	fmt.Printf("Working dir is: %s\n", WORKING_DIR)
 	// Welcome message
 	fmt.Println("Welcome to the Network-Latency-Visualizer!")
 	fmt.Println("--------------------------------------------")
 
 	// Get into advanced mode by using -a
 	if len(os.Args) > 1 && os.Args[1] == "-a" {
-		fmt.Println("advanced mode")
-
-		// Create a terminal menu for the user
-		menu := gocliselect.NewMenu("Choose your action")
-
-		// Create option for the user
-		menu.AddItem("Show chart of each network", "network pid")
-		menu.AddItem("Remove cronjob", "remove cronjob")
-		menu.AddItem("Edit cronjob", "edit cronjob")
-		menu.AddItem("Show network latency chart", "chart")
-		menu.AddItem("Speed testing", "speed testing")
-		menu.AddItem("Help me", "help me")
-		menu.AddItem("Quit", "quit")
-
-		for {
-			// Get the choice from the user
-			choice := menu.Display()
-
-			switch choice {
-			case "network pid":
-				err := chart.CreateNetworkChart(WORKING_DIR)
-				if err != nil {
-					log.Fatal(err)
-				}
-				// table.PrintTable()
-				os.Exit(1)
-
-			case "remove cronjob":
-				cronjob.SaveCronJob("", WORKING_DIR, "remove")
-				os.Exit(1)
-
-			case "chart":
-				chart.CreatePingChart()
-				os.Exit(1)
-
-			case "speed testing":
-				fmt.Println("We are running speed testing, please wait....")
-				speedtest.SpeedTesting()
-				os.Exit(1)
-
-			case "edit cronjob":
-				cronjob.SaveCronJob("", WORKING_DIR, "remove")
-				err := cronjob.SetUpCronJob(WORKING_DIR)
-				if err != nil {
-					log.Fatal(err)
-				}
-
-			case "quit":
-				os.Exit(1)
-
-			// Display help message
-			case "help me":
-				fmt.Println("To edit a cronjob, remove it first then do ./scanning")
-			}
-		}
+		RunTerminal(WORKING_DIR)
 	}
 
 	// If user do not input custom -a flag, then we will set up cronjob
