@@ -12,7 +12,7 @@ func PrintNetworkingTable(networkDataMap map[string]network.NetworkData, keyDesc
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 	// Set the header
-	t.AppendHeader(table.Row{"Process Name", "Incoming network (MB)", "Outgoing network (MB)", "Time"})
+	t.AppendHeader(table.Row{"Process Name", "Incoming data (MB)", "Outgoing data (MB)", "Time"})
 
 	// Key is sorted by MBIn (incoming network)
 	for _, processName := range keyDesc {
