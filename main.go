@@ -10,6 +10,8 @@ import (
 	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
 	"github.com/RichardHoa/Network-Latency-Visualizer/network"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
+	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
+
 	// "github.com/RichardHoa/Network-Latency-Visualizer/table"
 	"github.com/joho/godotenv"
 	// "time"
@@ -22,16 +24,6 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	// pwdCommand := exec.Command("pwd")
-	// pwdByte, err := pwdCommand.Output()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// pwd := strings.TrimSpace(string(pwdByte))
-
-	// os.Setenv("WORKING_DIR", pwd)
-
-	// WORKING_DIR here, important input for the whole program
 	WORKING_DIR := os.Getenv("WORKING_DIR")
 
 	if WORKING_DIR == "" {
@@ -74,7 +66,7 @@ func main() {
 	// If we already set up cronjob, then we will perform automatic scanning
 	if strings.Contains(string(cronjobList), "scanning") {
 		fmt.Println("We already set up cronjob")
-		fmt.Println("Perform automatic scanning and record network data...")
+		fmt.Println("Perform automatic scanning, record network data and record Upload Speed and Download Speed")
 
 		err := ping.PingScanning(WORKING_DIR)
 		if err != nil {
@@ -83,6 +75,11 @@ func main() {
 
 		recordErr := network.RecordNetworkData(WORKING_DIR)
 		if recordErr != nil {
+			log.Fatal(err)
+		}
+
+		speedtestErr := speedtest.RecordSpeedTestData(WORKING_DIR)
+		if speedtestErr != nil {
 			log.Fatal(err)
 		}
 		os.Exit(1)

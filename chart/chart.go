@@ -11,6 +11,7 @@ import (
 
 	"github.com/RichardHoa/Network-Latency-Visualizer/network"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
+	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
 	"github.com/RichardHoa/Network-Latency-Visualizer/table"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
@@ -51,9 +52,9 @@ func LineLabelPingChart(min []string, avg []string, max []string, stddev []strin
 func LineLabelNetworkPIDChart(TopDesc []string, networkDataMap map[string]network.NetworkData, MBType string) *charts.Line {
 	var title string
 	if MBType == "MBIn" {
-		title = "Incoming Network Data by Process"
+		title = "Incoming Network Data"
 	} else {
-		title = "Outgoing Network Data by Process"
+		title = "Outgoing Network Data"
 	}
 	line := charts.NewLine()
 	line.SetGlobalOptions(
@@ -80,9 +81,28 @@ func LineLabelNetworkPIDChart(TopDesc []string, networkDataMap map[string]networ
 		}),
 	)
 	return line
-
 }
 
+func LineLabelSpeedtestChart(DLSpeed []string, ULSpeed []string, timeString []string) *charts.Line {
+
+	line := charts.NewLine()
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title:    "Speedtest chart",
+			Subtitle: "All metrics are measured in MB (megabyte)",
+			Link:     "https://github.com/go-echarts/go-echarts",
+		}),
+	)
+	line.SetXAxis(timeString).
+		AddSeries("Download Speed", generateLineItems(DLSpeed)).
+		AddSeries("Upload Speed", generateLineItems(ULSpeed)).
+		SetSeriesOptions(
+			charts.WithLineChartOpts(opts.LineChart{
+				ShowSymbol: opts.Bool(true),
+			}),
+		)
+	return line
+}
 func CreatePingChart() {
 
 	min, avg, max, stddev, timeString, readReportErr := ping.ReadPingReport("ping/ping.txt")
@@ -135,6 +155,25 @@ func CreateNetworkChart(WORKING_DIR string) error {
 	}
 
 	table.PrintNetworkingTable(networkDataMap, keysMBInDesc)
+
+	return nil
+}
+
+func CreateSpeedtestChart() error {
+
+	DLSpeed, UPSpeed, timeString, readReportErr := speedtest.ReadSpeedTestReport("speedtest/speedtest.txt")
+	if readReportErr != nil {
+		return readReportErr
+	}
+
+	page := components.NewPage()
+	page.AddCharts(
+		LineLabelSpeedtestChart(DLSpeed, UPSpeed, timeString),
+	)
+	OpenHTMLErr := CreateAndOpenHTML(page, "chart/html/speedtest.html", "Speedtest chart")
+	if OpenHTMLErr != nil {
+		return OpenHTMLErr
+	}
 
 	return nil
 }

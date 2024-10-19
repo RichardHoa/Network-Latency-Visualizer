@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/RichardHoa/Network-Latency-Visualizer/chart"
 	"github.com/RichardHoa/Network-Latency-Visualizer/cronjob"
-	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
 	"github.com/nexidian/gocliselect"
 	"log"
 	"os"
@@ -22,7 +21,6 @@ func RunTerminal(WORKING_DIR string) {
 	menu.AddItem("Cronjob options", "cronjob options")
 	menu.AddItem("Show network bandwidth consumed by top 3 processes", "network pid")
 	menu.AddItem("Show network latency chart", "chart")
-	menu.AddItem("Speed testing", "speed testing")
 	menu.AddItem("Quit", "quit")
 
 	for {
@@ -44,11 +42,7 @@ func RunTerminal(WORKING_DIR string) {
 
 		case "chart":
 			chart.CreatePingChart()
-			os.Exit(1)
-
-		case "speed testing":
-			fmt.Println("We are running speed testing, please wait around 30 seconds")
-			speedtest.SpeedTesting()
+			chart.CreateSpeedtestChart()
 			os.Exit(1)
 
 		case "edit cronjob":
