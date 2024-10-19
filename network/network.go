@@ -69,12 +69,11 @@ func RecordNetworkData(WORKING_DIR string) error {
 
 		finalResult := matches[1] + " | " + receivedMBString + " | " + sentMBString + " | " + time.Now().Format("2006-01-02 15:04:05")
 
-		// Only record process that has received and sent network data
-		if receivedByte > 0 && sentByte > 0 {
-			_, writeFileErr := file.WriteString(finalResult + "\n")
-			if writeFileErr != nil {
-				return writeFileErr
-			}
+		// Write the string to the file
+		_, writeFileErr := file.WriteString(finalResult + "\n")
+		if writeFileErr != nil {
+			return writeFileErr
+
 		}
 	}
 
@@ -114,7 +113,7 @@ func ReadNetworkData(WORKING_DIR string) (networkMap map[string]NetworkData, err
 				SentMB:      sentMB,
 				Time:        time,
 			}
-		// If the process is not in the map, add it
+			// If the process is not in the map, add it
 		} else {
 			networkDataMap[processName] = NetworkData{
 				ProcessName: processName,
@@ -124,6 +123,9 @@ func ReadNetworkData(WORKING_DIR string) (networkMap map[string]NetworkData, err
 			}
 		}
 	}
+
+	networkDataMap = RemoveUnactivatedNetworkData(networkDataMap)
+
 	return networkDataMap, nil
 
 }
@@ -144,15 +146,15 @@ func SortNetworkDataMap(networkDataMap map[string]NetworkData, sortedByReceivedD
 		var (
 			totalMBI float64
 			totalMBJ float64
-			MBSliceI    []string
-			MBSliceJ    []string
+			MBSliceI []string
+			MBSliceJ []string
 		)
 
 		// if sorted by incoming network is true, sort by incoming network
 		if sortedByReceivedData {
 			MBSliceI = networkDataMap[keysDesc[i]].ReceivedMB
 			MBSliceJ = networkDataMap[keysDesc[j]].ReceivedMB
-		// if sorted by incoming network is false, sort by outgoing network
+			// if sorted by incoming network is false, sort by outgoing network
 		} else {
 			MBSliceI = networkDataMap[keysDesc[i]].SentMB
 			MBSliceJ = networkDataMap[keysDesc[j]].SentMB
@@ -187,4 +189,27 @@ func GetTopDesc(keysSorted []string, topNumber int) (topKeysInDesc []string) {
 
 	return topKeys
 
+}
+
+func RemoveUnactivatedNetworkData(networkDataMap map[string]NetworkData) (networkDataMapCleaned map[string]NetworkData) {
+
+	for key, networkdata := range networkDataMap {
+		allZeroSent := CheckFullZero(networkdata.SentMB)
+		allZeroReceived := CheckFullZero(networkdata.ReceivedMB)
+		if allZeroSent && allZeroReceived {
+			delete(networkDataMap, key)
+		}
+	}
+
+	return networkDataMap
+
+}
+
+func CheckFullZero(slice []string) bool {
+	for _, value := range slice {
+		if value != "0.00000" {
+			return false
+		}
+	}
+	return true
 }

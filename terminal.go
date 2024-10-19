@@ -16,12 +16,12 @@ func RunTerminal(WORKING_DIR string) {
 
 	// Create option for the user
 	menu.AddItem("Cronjob options", "cronjob options")
-	menu.AddItem("Show network consumption chart", "network consumption chart")
+	menu.AddItem("Show process network usage", "network usage chart")
 	menu.AddItem("Show network latency chart", "network latency chart")
 	menu.AddItem("Quit", "quit")
 
 	for {
-		clearTerminal()
+		// clearTerminal()
 		// Get the choice from the user
 		choice := menu.Display()
 
@@ -29,7 +29,7 @@ func RunTerminal(WORKING_DIR string) {
 		case "cronjob options":
 			cronJobOPtions(WORKING_DIR)
 
-		case "network consumption chart":
+		case "network usage chart":
 			err := chart.CreateNetworkChart(WORKING_DIR)
 			if err != nil {
 				log.Fatal(err)
@@ -58,7 +58,7 @@ func cronJobOPtions(WORKING_DIR string) {
 	menu.AddItem("Remove cronjob completely", "remove cronjob")
 	menu.AddItem("Come back", "come back")
 
-	clearTerminal()
+	// clearTerminal()
 	choice := menu.Display()
 
 	switch choice {
