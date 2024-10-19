@@ -26,7 +26,7 @@ func generateLineItems(dataPoints []string) []opts.LineData {
 	return items
 }
 
-func LineLabelPingChart(min []string, avg []string, max []string, stddev []string, timeString []string) *charts.Line {
+func LineLabelPingChart(pingStats ping.PingStats) *charts.Line {
 	line := charts.NewLine()
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
@@ -36,11 +36,11 @@ func LineLabelPingChart(min []string, avg []string, max []string, stddev []strin
 		}),
 	)
 
-	line.SetXAxis(timeString).
-		AddSeries("Min latency", generateLineItems(min)).
-		AddSeries("Avg latency", generateLineItems(avg)).
-		AddSeries("Max latency", generateLineItems(max)).
-		AddSeries("Standard deviation", generateLineItems(stddev)).
+	line.SetXAxis(pingStats.TimeString).
+		AddSeries("Min latency", generateLineItems(pingStats.Min)).
+		AddSeries("Avg latency", generateLineItems(pingStats.Avg)).
+		AddSeries("Max latency", generateLineItems(pingStats.Max)).
+		AddSeries("Standard deviation", generateLineItems(pingStats.Sttdev)).
 		SetSeriesOptions(
 			charts.WithLineChartOpts(opts.LineChart{
 				ShowSymbol: opts.Bool(true),
@@ -69,9 +69,9 @@ func LineLabelNetworkPIDChart(TopDesc []string, networkDataMap map[string]networ
 
 	for _, processName := range TopDesc {
 		if MBType == "MBIn" {
-			line.AddSeries(processName, generateLineItems(networkDataMap[processName].MBIn))
+			line.AddSeries(processName, generateLineItems(networkDataMap[processName].ReceivedMB))
 		} else if MBType == "MBOut" {
-			line.AddSeries(processName, generateLineItems(networkDataMap[processName].MBOut))
+			line.AddSeries(processName, generateLineItems(networkDataMap[processName].SentMB))
 		}
 	}
 
@@ -105,14 +105,14 @@ func LineLabelSpeedtestChart(DLSpeed []string, ULSpeed []string, timeString []st
 }
 func CreatePingChart() {
 
-	min, avg, max, stddev, timeString, readReportErr := ping.ReadPingReport("ping/ping.txt")
+	pingStats, readReportErr := ping.ReadPingReport("ping/ping.txt")
 	if readReportErr != nil {
 		log.Fatal(readReportErr)
 	}
 
 	page := components.NewPage()
 	page.AddCharts(
-		LineLabelPingChart(min, avg, max, stddev, timeString),
+		LineLabelPingChart(pingStats),
 	)
 	err := CreateAndOpenHTML(page, "chart/html/ping.html", "Network latency chart")
 	if err != nil {

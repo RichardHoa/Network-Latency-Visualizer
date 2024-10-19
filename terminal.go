@@ -11,16 +11,13 @@ import (
 )
 
 func RunTerminal(WORKING_DIR string) {
-
-	fmt.Println("advanced mode")
-
 	// Create a terminal menu for the user
 	menu := gocliselect.NewMenu("What do you want to do?")
 
 	// Create option for the user
 	menu.AddItem("Cronjob options", "cronjob options")
-	menu.AddItem("Show network bandwidth consumed by top 3 processes", "network pid")
-	menu.AddItem("Show network latency chart", "chart")
+	menu.AddItem("Show network consumption chart", "network consumption chart")
+	menu.AddItem("Show network latency chart", "network latency chart")
 	menu.AddItem("Quit", "quit")
 
 	for {
@@ -29,28 +26,20 @@ func RunTerminal(WORKING_DIR string) {
 		choice := menu.Display()
 
 		switch choice {
-		case "network pid":
+		case "cronjob options":
+			cronJobOPtions(WORKING_DIR)
+
+		case "network consumption chart":
 			err := chart.CreateNetworkChart(WORKING_DIR)
 			if err != nil {
 				log.Fatal(err)
 			}
-			// table.PrintTable()
 			os.Exit(1)
 
-		case "cronjob options":
-			cronJobOPtions(WORKING_DIR)
-
-		case "chart":
-			chart.CreatePingChart()
+		case "network latency chart":
 			chart.CreateSpeedtestChart()
+			chart.CreatePingChart()
 			os.Exit(1)
-
-		case "edit cronjob":
-			cronjob.SaveCronJob("", WORKING_DIR, "remove")
-			err := cronjob.SetUpCronJob(WORKING_DIR)
-			if err != nil {
-				log.Fatal(err)
-			}
 
 		case "quit":
 			fmt.Println("Goodbye! See you later")
@@ -65,8 +54,8 @@ func RunTerminal(WORKING_DIR string) {
 func cronJobOPtions(WORKING_DIR string) {
 	menu := gocliselect.NewMenu("Cronjob options")
 
-	menu.AddItem("Edit cronjob", "edit cronjob")
-	menu.AddItem("Remove cronjob", "remove cronjob")
+	menu.AddItem("Edit cronjob time", "edit cronjob")
+	menu.AddItem("Remove cronjob completely", "remove cronjob")
 	menu.AddItem("Come back", "come back")
 
 	clearTerminal()
@@ -75,7 +64,9 @@ func cronJobOPtions(WORKING_DIR string) {
 	switch choice {
 
 	case "edit cronjob":
+		// Remove the current cronjob
 		cronjob.SaveCronJob("", WORKING_DIR, "remove")
+		// Add a new cronjob
 		err := cronjob.SetUpCronJob(WORKING_DIR)
 		if err != nil {
 			log.Fatal(err)

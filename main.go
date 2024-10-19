@@ -11,10 +11,7 @@ import (
 	"github.com/RichardHoa/Network-Latency-Visualizer/network"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
 	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
-
-	// "github.com/RichardHoa/Network-Latency-Visualizer/table"
 	"github.com/joho/godotenv"
-	// "time"
 )
 
 func main() {
@@ -24,10 +21,11 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	// Get working directory by env
 	WORKING_DIR := os.Getenv("WORKING_DIR")
 
+	// If env is not available, set the working directory to current working dir
 	if WORKING_DIR == "" {
-
 		pwdCommand := exec.Command("pwd")
 
 		pwdByte, err := pwdCommand.Output()
@@ -36,10 +34,7 @@ func main() {
 		}
 
 		WORKING_DIR = strings.TrimSpace(string(pwdByte))
-
 	}
-
-	// "/Users/hoathaidang/Documents/bootdev/go-networking"
 
 	if len(os.Args) > 1 && os.Args[1] != "-a" {
 		fmt.Println("Invalid command line")
@@ -55,7 +50,7 @@ func main() {
 		RunTerminal(WORKING_DIR)
 	}
 
-	// If user do not input custom -a flag, then we will set up cronjob
+	// If user do not input custom -a flag, then switch to collecting data mode
 
 	// List existing cronjobs
 	cronjobList, listCronjobErr := exec.Command("crontab", "-l").Output()
@@ -63,12 +58,12 @@ func main() {
 		log.Fatal(listCronjobErr)
 	}
 
-	// If we already set up cronjob, then we will perform automatic scanning
+	// If we already set up cronjob, then we will collect data 
 	if strings.Contains(string(cronjobList), "scanning") {
 		fmt.Println("We already set up cronjob")
 		fmt.Println("Perform automatic scanning, record network data and record Upload Speed and Download Speed")
 
-		err := ping.PingScanning(WORKING_DIR)
+		err := ping.RecordPingData(WORKING_DIR)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -82,6 +77,7 @@ func main() {
 		if speedtestErr != nil {
 			log.Fatal(err)
 		}
+		
 		os.Exit(1)
 
 	} else {

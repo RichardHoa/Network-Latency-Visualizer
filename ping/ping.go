@@ -8,8 +8,16 @@ import (
 	"time"
 )
 
-// Function to scan ping for network latency then save the stats to report/report.txt
-func PingScanning(workingDir string) (scanningErr error) {
+type PingStats struct {
+	Min        []string
+	Avg        []string
+	Max        []string
+	Sttdev     []string
+	TimeString []string
+}
+
+// Function to scan ping for network latency then save the stats to ping/ping.txt
+func RecordPingData(workingDir string) (scanningErr error) {
 	// Initialize path of the report file
 	workingDirReport := workingDir + "/ping/ping.txt"
 	// Testing log
@@ -43,20 +51,19 @@ func PingScanning(workingDir string) (scanningErr error) {
 	return nil
 }
 
-func ReadPingReport(reportPath string) (min []string, avg []string, max []string, sttdev []string, timeString []string, err error) {
+// Function to read the report and return the stats, ready for chart building
+func ReadPingReport(reportPath string) (pingStats PingStats, err error) {
 
 	report, openFileErr := os.ReadFile(reportPath)
 	if openFileErr != nil {
-		return nil, nil, nil, nil, nil, openFileErr
+		return PingStats{}, openFileErr
 	}
+
+	// Extract data
 	lines := strings.Split(string(report), "\n")
 	lines = lines[:len(lines)-1]
 
-	minSlice := make([]string, 0)
-	avgSlice := make([]string, 0)
-	maxSlice := make([]string, 0)
-	stddevSlice := make([]string, 0)
-	timeStringSlice := make([]string, 0)
+	pingStats = PingStats{}
 
 	for _, line := range lines {
 		lineSlice := strings.Split(line, "|")
@@ -64,13 +71,13 @@ func ReadPingReport(reportPath string) (min []string, avg []string, max []string
 		data := lineSlice[0]
 		stats := strings.Split(strings.Split(data, "=")[1], "/")
 
-		minSlice = append(minSlice, stats[0])
-		avgSlice = append(avgSlice, stats[1])
-		maxSlice = append(maxSlice, stats[2])
-		stddevSlice = append(stddevSlice, strings.Split(stats[3], " ")[0])
-		timeStringSlice = append(timeStringSlice, time)
+		pingStats.Min = append(pingStats.Min, stats[0])
+		pingStats.Avg = append(pingStats.Avg, stats[1])
+		pingStats.Max = append(pingStats.Max, stats[2])
+		pingStats.Sttdev = append(pingStats.Sttdev, strings.Split(stats[3], " ")[0])
+		pingStats.TimeString = append(pingStats.TimeString, time)
 	}
 
-	return minSlice, avgSlice, maxSlice, stddevSlice, timeStringSlice, nil
+	return pingStats, nil
 
 }
