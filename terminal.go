@@ -16,7 +16,7 @@ func RunTerminal(WORKING_DIR string) {
 
 	// Create option for the user
 	menu.AddItem("Cronjob options", "cronjob options")
-	menu.AddItem("Show process network usage", "network usage chart")
+	menu.AddItem("Show process network usage chart", "network usage chart")
 	menu.AddItem("Show network latency chart", "network latency chart")
 	menu.AddItem("Quit", "quit")
 

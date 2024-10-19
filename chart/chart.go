@@ -1,10 +1,10 @@
 package chart
 
 import (
-	"io"
-	"os"
 	"fmt"
+	"io"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -69,17 +69,20 @@ func LineLabelProcessNetworkUsageChart(TopDesc []string, networkDataMap map[stri
 	)
 
 	// Get the time string of the process that either received or sent the most data
-	timeString := networkDataMap[TopDesc[0]].Time
+	
+	processNameLongestTime := network.FindLongestTime(TopDesc, networkDataMap)
+	networkDataMap = network.EqualizeTopKey(networkDataMap, TopDesc, processNameLongestTime)
+
+	timeString := networkDataMap[processNameLongestTime].Time
+
 	line.SetXAxis(timeString)
-
-
 
 	for _, processName := range TopDesc {
 		if typeOfNetwork == "received" {
 			line.AddSeries(processName, generateLineItems(networkDataMap[processName].ReceivedMB))
 		} else if typeOfNetwork == "sent" {
-			// fmt.Printf("process name: %s\n", processName)
-			// fmt.Printf("Sent MB: %d\n", len(networkDataMap[processName].SentMB))
+			fmt.Printf("process name: %s\n", processName)
+			fmt.Printf("Time: %s\n", networkDataMap[processName].Time)
 			line.AddSeries(processName, generateLineItems(networkDataMap[processName].SentMB))
 		}
 	}
@@ -114,7 +117,6 @@ func LineLabelSpeedtestChart(DLSpeed []string, ULSpeed []string, timeString []st
 	return line
 }
 
-
 // Function to create the network latency chart
 func CreatePingChart() {
 
@@ -133,7 +135,6 @@ func CreatePingChart() {
 	}
 
 }
-
 
 // Function to create the process network usage chart
 func CreateNetworkChart(WORKING_DIR string) error {
@@ -180,7 +181,6 @@ func CreateNetworkChart(WORKING_DIR string) error {
 	return nil
 }
 
-
 // Function to create the speedtest chart
 func CreateSpeedtestChart() error {
 
@@ -200,8 +200,6 @@ func CreateSpeedtestChart() error {
 
 	return nil
 }
-
-
 
 // Helper functions
 func CreateAndOpenHTML(page *components.Page, filePath string, title string) error {
@@ -231,3 +229,4 @@ func CreateAndOpenHTML(page *components.Page, filePath string, title string) err
 	return nil
 
 }
+

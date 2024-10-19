@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"slices"
 )
 
 type NetworkData struct {
@@ -67,7 +68,7 @@ func RecordNetworkData(WORKING_DIR string) error {
 		receivedMBString := fmt.Sprintf("%.5f", receivedMB)
 		sentMBString := fmt.Sprintf("%.5f", sentMB)
 
-		finalResult := matches[1] + " | " + receivedMBString + " | " + sentMBString + " | " + time.Now().Format("2006-01-02 15:04:05")
+		finalResult := matches[1] + "." + matches[2] + " | " + receivedMBString + " | " + sentMBString + " | " + time.Now().Format("2006-01-02 15:04:05")
 
 		// Write the string to the file
 		_, writeFileErr := file.WriteString(finalResult + "\n")
@@ -212,4 +213,40 @@ func CheckFullZero(slice []string) bool {
 		}
 	}
 	return true
+}
+
+
+// Some processes might have different length of time, this function will make them have the same length
+func EqualizeTopKey(networkDataMap map[string]NetworkData, TopDesc []string, processNameLongestTime string) (networkDataMapCleaned map[string]NetworkData) {
+
+	for index, time := range networkDataMap[processNameLongestTime].Time {
+		for _, processName := range TopDesc {
+			if time != networkDataMap[processName].Time[index] {
+				networkData := networkDataMap[processName]
+				networkData.Time = slices.Insert(networkData.Time, index, time)
+				networkData.ReceivedMB = slices.Insert(networkData.ReceivedMB, index, "0.00000")
+				networkData.SentMB = slices.Insert(networkData.SentMB, index, "0.00000")
+				networkDataMap[processName] = networkData
+			}
+
+		}
+
+	}
+
+	return networkDataMap
+
+}
+
+// Find the processName that has the longest time slice
+func FindLongestTime(TopDesc []string, networkDataMap map[string]NetworkData) (processName string) {
+	longest := 0
+	if len(networkDataMap[TopDesc[1]].Time) > len(networkDataMap[TopDesc[0]].Time) {
+		longest = 1
+	}
+	if len(networkDataMap[TopDesc[2]].Time) > len(networkDataMap[TopDesc[longest]].Time) {
+		longest = 2
+	}
+
+	return TopDesc[longest]
+
 }

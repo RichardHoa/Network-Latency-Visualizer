@@ -73,7 +73,7 @@ func askForTimeInput() (timeInMinutes int) {
 			continue
 		}
 		//  If min is between 1 and 60 or min is between 1 hr and 24 hrs and the number is whole
-		if min >= 1 && min <= 60 || min > 60 && min%60 == 0 && min < 1440 {
+		if min >= 1 && min <= 60 || min > 60 && min%60 == 0 && min <= 1440 {
 			time = min
 			break
 			// If the time is not within the limit, prompt user again
