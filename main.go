@@ -11,15 +11,9 @@ import (
 	"github.com/RichardHoa/Network-Latency-Visualizer/network"
 	"github.com/RichardHoa/Network-Latency-Visualizer/ping"
 	"github.com/RichardHoa/Network-Latency-Visualizer/speedtest"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	// Get working directory by env
 	WORKING_DIR := os.Getenv("WORKING_DIR")

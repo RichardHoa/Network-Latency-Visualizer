@@ -3,7 +3,7 @@
 ## Features
 
 1. **Data Visualization**: Visualize network latency data over time in easy-to-understand charts.
-2. **Network Latency Monitoring**: Perform regular network latency checks using the `ping` command. You can set the frequency of checks (from every 5 minutes to once a day) via a cron job to automate the process.
+2. **Network Latency Monitoring**: Perform regular network latency checks using the `ping` command. You can set the frequency of checks (from every 1 minutes to once a day) via a cron job to automate the process.
 3. **Process Bandwidth Usage**: Track bandwidth usage by individual processes, displaying both incoming and outgoing data.
 4. **Download & Upload Speed**: Measure and display your current download and upload speeds.
 
