@@ -71,6 +71,7 @@ func LineLabelProcessNetworkUsageChart(TopDesc []string, networkDataMap map[stri
 	// Get the time string of the process that either received or sent the most data
 	
 	processNameLongestTime := network.FindLongestTime(TopDesc, networkDataMap)
+	
 	networkDataMap = network.EqualizeTopKey(networkDataMap, TopDesc, processNameLongestTime)
 
 	timeString := networkDataMap[processNameLongestTime].Time
@@ -81,8 +82,6 @@ func LineLabelProcessNetworkUsageChart(TopDesc []string, networkDataMap map[stri
 		if typeOfNetwork == "received" {
 			line.AddSeries(processName, generateLineItems(networkDataMap[processName].ReceivedMB))
 		} else if typeOfNetwork == "sent" {
-			fmt.Printf("process name: %s\n", processName)
-			fmt.Printf("Time: %s\n", networkDataMap[processName].Time)
 			line.AddSeries(processName, generateLineItems(networkDataMap[processName].SentMB))
 		}
 	}

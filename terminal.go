@@ -21,7 +21,7 @@ func RunTerminal(WORKING_DIR string) {
 	menu.AddItem("Quit", "quit")
 
 	for {
-		// clearTerminal()
+		clearTerminal()
 		// Get the choice from the user
 		choice := menu.Display()
 
@@ -58,7 +58,7 @@ func cronJobOPtions(WORKING_DIR string) {
 	menu.AddItem("Remove cronjob completely", "remove cronjob")
 	menu.AddItem("Come back", "come back")
 
-	// clearTerminal()
+	clearTerminal()
 	choice := menu.Display()
 
 	switch choice {
