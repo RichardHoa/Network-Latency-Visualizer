@@ -53,23 +53,26 @@ What do you want to do?:
 - **Cronjob Options**: Modify or remove the existing cronjob that automates network checks. 
   ```bash
   Cronjob options:
-  > Edit cronjob time
-    Remove cronjob completely
-    Come back
+    Edit cronjob time.
+    Remove cronjob completely.
+    Come back.
   ```
-  The option is self-explainatory
+  The options are self-explainatory
+
   If you want to see the cronjob this program has set up, do:
   ```bash
   crontab -l
   ```
+
   The cronjob working directory will resemble: `$Yourworkingdir/go-networking/scanning`.
+
 
 - **Show process network usage chart**: These charts display the cumulative amount of data sent and received by processes since their creation. Note that the data shown is the total accumulated over time, not the current data transfer in any specific period.
 
   1. Received Network Data. This chart highlights the **top 3 processes** that have received the largest amount of data.
-     ![sent network data chart](./img/sent-network-data-chart.png)
-  2. Sent Network Data. This chart highlights the **top 3 processes** that have sent the largest amount of data.
      ![received network data chart](./img/received-network-data-chart.png)
+  2. Sent Network Data. This chart highlights the **top 3 processes** that have sent the largest amount of data.
+     ![sent network data chart](./img/sent-network-data-chart.png)
   3. In addition to the charts, a detailed table with all processes and their network usage is displayed in the terminal. The processes are **ordered by the average amount of data received**.
       ![terminal table image](./img/terminal-table.png)
 
@@ -91,7 +94,7 @@ All HTML charts are stored in the `chart/html` folder for future access.
 
 This project was created as a way to get familiar with the Go programming language, combined with an interest in networking.
 
-## Technology
+## Terminal commands being useds
 
 - **Latency Data Collection**: Uses the built-in macOS `ping` command (`ping google.com -c 10`) to gather latency data.
 - **Bandwidth Usage**: Uses `nettop -l 1 -P -x` to monitor bandwidth usage by each process.
@@ -182,4 +185,7 @@ This project is organized into several folders, each responsible for specific fu
 - **Process Name Length**: The `nettop` command truncates long process names, but it's usually clear enough to identify the associated application.
 
 ## External library being used:
-- 
+- github.com/showwin/speedtest-go
+- github.com/go-echarts/go-echarts/v2
+- github.com/nexidian/gocliselect
+- github.com/jedib0t/go-pretty
