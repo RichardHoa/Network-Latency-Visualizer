@@ -221,6 +221,14 @@ func EqualizeTopKey(networkDataMap map[string]NetworkData, TopDesc []string, pro
 
 	for index, time := range networkDataMap[processNameLongestTime].Time {
 		for _, processName := range TopDesc {
+			if index == len(networkDataMap[processName].Time) {
+				networkData := networkDataMap[processName]
+				networkData.Time = slices.Insert(networkData.Time, index, time)
+				networkData.ReceivedMB = slices.Insert(networkData.ReceivedMB, index, "0.00000")
+				networkData.SentMB = slices.Insert(networkData.SentMB, index, "0.00000")
+				networkDataMap[processName] = networkData
+				
+			}
 			if time != networkDataMap[processName].Time[index] {
 				networkData := networkDataMap[processName]
 				networkData.Time = slices.Insert(networkData.Time, index, time)

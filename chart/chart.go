@@ -31,9 +31,17 @@ func LineLabelPingChart(pingStats ping.PingStats) *charts.Line {
 	line := charts.NewLine()
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title:    "Network latency chart",
-			Subtitle: "All metrics are measured in ms (milisecond)\nYou can turn on and off the line by clicking on the legend",
-			Link:     "https://github.com/go-echarts/go-echarts",
+			Title: "Network latency chart",
+			Link:  "https://github.com/RichardHoa/Network-Latency-Visualizer",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name: "Time",
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Name: "Ping latency (ms)",
+			SplitLine: &opts.SplitLine{
+				Show: opts.Bool(true),
+			},
 		}),
 	)
 
@@ -64,14 +72,23 @@ func LineLabelProcessNetworkUsageChart(TopDesc []string, networkDataMap map[stri
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
 			Title: title,
-			Link:  "https://github.com/go-echarts/go-echarts",
+			Link:  "https://github.com/RichardHoa/Network-Latency-Visualizer",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name: "Time",
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Name: "Network latency (MB)",
+			SplitLine: &opts.SplitLine{
+				Show: opts.Bool(true),
+			},
 		}),
 	)
 
 	// Get the time string of the process that either received or sent the most data
-	
+
 	processNameLongestTime := network.FindLongestTime(TopDesc, networkDataMap)
-	
+
 	networkDataMap = network.EqualizeTopKey(networkDataMap, TopDesc, processNameLongestTime)
 
 	timeString := networkDataMap[processNameLongestTime].Time
@@ -100,17 +117,35 @@ func LineLabelSpeedtestChart(DLSpeed []string, ULSpeed []string, timeString []st
 	line := charts.NewLine()
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title:    "Speedtest chart",
-			Subtitle: "All metrics are measured in MB (megabyte)",
-			Link:     "https://github.com/go-echarts/go-echarts",
+			Title: "Speedtest chart",
+			Link:  "https://github.com/RichardHoa/Network-Latency-Visualizer",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			Name: "Time",
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Name: "Network speed (MB/s)",
+			SplitLine: &opts.SplitLine{
+				Show: opts.Bool(true),
+			},
 		}),
 	)
 	line.SetXAxis(timeString).
 		AddSeries("Download Speed", generateLineItems(DLSpeed)).
 		AddSeries("Upload Speed", generateLineItems(ULSpeed)).
 		SetSeriesOptions(
+			charts.WithMarkLineNameTypeItemOpts(opts.MarkLineNameTypeItem{
+				Name: "Average",
+				Type: "average",
+			}),
 			charts.WithLineChartOpts(opts.LineChart{
 				ShowSymbol: opts.Bool(true),
+			}),
+			charts.WithMarkPointStyleOpts(opts.MarkPointStyle{
+				Label: &opts.Label{
+					Show:      opts.Bool(true),
+					Formatter: "{a}: {b}",
+				},
 			}),
 		)
 	return line
@@ -228,4 +263,3 @@ func CreateAndOpenHTML(page *components.Page, filePath string, title string) err
 	return nil
 
 }
-
